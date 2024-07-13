@@ -7,7 +7,7 @@ use log::error;
 use serde::{Deserialize, Serialize};
 use std::io::Error;
 impl Client {
-    pub fn SendSms(&mut self, request: &mut SendSmsRequest) -> Result<SendSmsResponse, Error> {
+    pub fn SendSms(&mut self, request: &mut SendSmsRequest) -> Result<BaseResponse, Error> {
         let mut response = CreateSendSmsResponse();
         request.BuildQueryParams();
         let mut baseResponse = responses::BaseResponse::default();
@@ -15,14 +15,14 @@ impl Client {
         if (baseResponse.httpStatus != 200) {
             error!("send sms facing error: {:?}", baseResponse);
         }
-        response = serde_json::from_slice(&baseResponse.httpContentBytes)?;
-        Ok(response)
+        // response = serde_json::from_slice(&baseResponse.httpContentBytes)?;
+        Ok(baseResponse)
     }
 }
 
 use crate::sdk::requests::BaseRequestExt;
 use crate::sdk::requests::{self, BaseRequest};
-use crate::sdk::responses;
+use crate::sdk::responses::{self, BaseResponse};
 #[derive(Default, Debug)]
 pub struct SendSmsRequest {
     rpcRequest: requests::RpcRequest,
