@@ -3,6 +3,7 @@
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 use super::Client;
+use log::error;
 use serde::{Deserialize, Serialize};
 use std::io::Error;
 impl Client {
@@ -11,6 +12,9 @@ impl Client {
         request.BuildQueryParams();
         let mut baseResponse = responses::BaseResponse::default();
         self.DoAction(&mut request.rpcRequest, &mut baseResponse)?;
+        if (baseResponse.httpStatus != 200) {
+            error!("send sms facing error: {:?}", baseResponse);
+        }
         response = serde_json::from_slice(&baseResponse.httpContentBytes)?;
         Ok(response)
     }
